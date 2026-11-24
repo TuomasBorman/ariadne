@@ -263,8 +263,9 @@ setMethod("weavePath", signature = c(graph = "igraph"),
         ext <- c("chebi", "geneid", "proteinid", "pubchem", "uniprotkb")
         # Select function based on id types
         kegg_fun <- ifelse(any(c(g$from, g$to) %in% ext), keggConv, keggLink)
-        # Use initial values as input for genes db
-        orig <- if( "kegg_genes" %in% c(g$from, g$to) ) init else g$specFrom
+        # Use initial values as input for genes db and external dbs
+        orig <- if( "kegg_genes" %in% c(g$from, g$to) ||
+            (is_init && g$from %in% ext) ) init else g$specFrom
         # Add prefix to external from ids
         if( is_init && g$from %in% ext ) orig <- paste0(g$specFrom, ":", orig)
         # Send query to keggLink
