@@ -5,10 +5,10 @@
 .cache_resource <- function(url, res.name, from, to){
     # Initialise cache
     bfc <- .init_cache()
-    # Build resource name
-    rname <- file.path(res.name, paste(from, to, sep = "2"))
+    # Build version-specific resource name
+    rname <- .resource_rname(url, res.name, from, to)
     # Check if preprocessed file is cached
-    cached <- bfcquery(bfc, rname)$rpath
+    cached <- .query_cache(bfc, rname)
     # Return preprocessed file if available
     if( length(cached) > 0L ) return(cached[1])
     # Select function based on resource
@@ -81,8 +81,27 @@
     # Store linkmap in cache as parquet file
     .add2cache(linkmap, rname, bfc)
     # Return path to cached preprocessed file
-    cached <- bfcquery(bfc, rname)$rpath
-    return(cached)
+    cached <- .query_cache(bfc, rname)
+    return(cached[1])
+}
+
+
+# Build the cache resource name of a preprocessed linkmap. The url is hashed
+# into the name because it uniquely identifies the resource version (version
+# keys are inserted into urls by .insert_version), so linkmaps from different
+# versions of the same resource do not overwrite or shadow one another.
+#' @importFrom rlang hash
+.resource_rname <- function(url, res.name, from, to){
+    file.path(res.name, hash(url), paste(from, to, sep = "2"))
+}
+
+
+# Find cached files by exact resource name. bfcquery defaults to regex matching
+# across rname, rpath and fpath, which can return entries for other resources
+# whose names merely contain rname.
+#' @importFrom BiocFileCache bfcquery
+.query_cache <- function(bfc, rname){
+    bfcquery(bfc, rname, field = "rname", exact = TRUE)$rpath
 }
 
 

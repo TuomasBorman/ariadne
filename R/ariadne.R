@@ -123,7 +123,7 @@ ariadne <- function(versions = NULL){
     # Build resource name
     rname <- file.path("ariadneDB", gver, res.name)
     # Check if preprocessed file is cached
-    cached <- bfcquery(bfc, rname)$rpath
+    cached <- .query_cache(bfc, rname)
     # Return preprocessed file if available
     if( length(cached) > 0L ) return(cached[1])
     # Find path for cache subdir
@@ -137,7 +137,8 @@ ariadne <- function(versions = NULL){
         bfc, rname = rname, fpath = fpath, fname = "exact", action = "asis"
     )
     # Return path to cached preprocessed file
-    cached <- bfcquery(bfc, rname)$rpath
+    cached <- .query_cache(bfc, rname)
+    return(cached[1])
 }
 
 

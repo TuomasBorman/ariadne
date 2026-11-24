@@ -28,7 +28,8 @@ importFrom(BiocFileCache,
   BiocFileCache,
   bfcadd,
   bfccache,
-  bfcquery
+  bfcquery,
+  bfcremove
 )
 importFrom(BiocParallel,
   bplapply,
@@ -122,7 +123,10 @@ importFrom(multifactor,
   weave
 )
 importFrom(readr,read_lines)
-importFrom(rlang,sym)
+importFrom(rlang,
+  hash,
+  sym
+)
 importFrom(rotl,
   tax_sources,
   tnrs_match_names
